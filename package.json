@@ -1,0 +1,32 @@
+{
+  "name": "preprocessor-adapter",
+  "version": "0.0.1",
+  "description": "preprocessor-adapter",
+  "keywords": [
+    "transform"
+  ],
+  "homepage": "https://github.com/zertosh/preprocessor-adapter",
+  "licence": "MIT",
+  "author": "Andres Suarez <zertosh@gmail.com>",
+  "files": [
+    "README.md",
+    "preprocessor-adapter.js"
+  ],
+  "main": "preprocessor-adapter.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zertosh/preprocessor-adapter.git"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "dependencies": {
+    "through2": "^0.6.3"
+  },
+  "devDependencies": {
+    "tape": "^3.5.0"
+  },
+  "engines": {
+    "node": ">=0.10"
+  }
+}
