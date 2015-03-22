@@ -8,9 +8,11 @@ var fs = require('fs');
 var through = require('through2');
 
 var _extensions = ['.js', '.jsx'];
-var _filter = function(file) { return _rallowed.test(file); };
-// not in "node_modules" and is a ".js" or ".jsx"
-var _rallowed = /^(?!.*?\bnode_modules\b).+\.(js|jsx)$/;
+var _rtoplevel = /\bnode_modules\b/;
+
+function _filter(file) {
+  return !_rtoplevel.test(file);
+}
 
 function withErrorDetails(err, file) {
   err.name = 'PreprocessorAdapter';
@@ -49,10 +51,17 @@ var PreprocessorAdapter = {
     var extensions = opts.extensions || _extensions;
     var filter = opts.filter || _filter;
 
+    function include(file) {
+      var isType = extensions.some(function(ext) {
+        return file.indexOf(ext, file.length - ext.length) !== -1;
+      });
+      return isType && filter(file);
+    }
+
     // browserify - transform
     // https://github.com/substack/node-browserify#btransformtr-opts
     var custom = function(file, options) {
-      if (!filter(file)) {
+      if (!include(file)) {
         return through();
       }
       return concat(function(src, next) {
@@ -86,7 +95,7 @@ var PreprocessorAdapter = {
     // https://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string
     custom.process = function(src, file) {
       src = stripBOM(src);
-      if (!filter(file)) {
+      if (!include(file)) {
         return src;
       }
       try {
@@ -104,7 +113,7 @@ var PreprocessorAdapter = {
       }
       function compile(module, file) {
         var src = stripBOM(fs.readFileSync(file, 'utf8'));
-        if (!filter(file)) {
+        if (!include(file)) {
           module._compile(src, file);
           return;
         }

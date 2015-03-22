@@ -8,9 +8,10 @@ var babel = require('babel-core');
 var PreprocessorAdapter = require('preprocessor-adapter');
 
 module.exports = PreprocessorAdapter.create({
+  extensions: ['.js', 'jsx'],
   filter: function(file) {
-    // not in "node_modules" and is a ".js" or ".jsx"
-    return /^(?!.*?\bnode_modules\b).+\.(js|jsx)$/.test(file);
+    // not in "node_modules"
+    return !/\bnode_modules\b/.test(file);
   },
   transform: function(src, file) {
     return babel.transform({loose: 'all'});
