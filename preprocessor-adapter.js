@@ -5,6 +5,7 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 var through = require('through2');
 
 var _extensions = ['.js', '.jsx'];
@@ -16,9 +17,12 @@ function _filter(file) {
 
 function withErrorDetails(err, file) {
   err.name = 'PreprocessorAdapter';
-  if (file) {
-    err.message = file + ': ' + err.message;
+  if (typeof file === 'string') {
     err.fileName = file;
+    // don't clutter error messages with duplicate file names
+    if (String(err.message).indexOf(path.basename(file)) === -1) {
+      err.message = file + ': ' + err.message;
+    }
   }
   return err;
 }
