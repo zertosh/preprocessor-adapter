@@ -101,10 +101,11 @@ var PreprocessorAdapter = {
           return;
         }
         try {
-          module._compile(transform(src, file), file);
+          var code = transform(src, file);
         } catch(err) {
           throw withErrorDetails(err, file);
         }
+        module._compile(code, file);
       }
       extensions.forEach(function(ext) { require.extensions[ext] = compile; });
       registered = true;
