@@ -100,14 +100,15 @@ var PreprocessorAdapter = {
       }
       function compile(module, file) {
         var src = stripBOM(fs.readFileSync(file, 'utf8'));
+        var code;
         if (!include(file)) {
-          module._compile(src, file);
-          return;
-        }
-        try {
-          var code = transform(src, file);
-        } catch(err) {
-          throw withErrorDetails(err, file);
+          code = src;
+        } else {
+          try {
+            code = transform(src, file);
+          } catch(err) {
+            throw withErrorDetails(err, file);
+          }
         }
         module._compile(code, file);
       }
