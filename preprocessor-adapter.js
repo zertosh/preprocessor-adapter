@@ -47,7 +47,6 @@ var PreprocessorAdapter = {
     }
 
     var transform = opts.transform;
-    var wrap = opts.wrap;
     var extensions = opts.extensions || _extensions;
     var filter = opts.filter || _filter;
 
@@ -72,22 +71,6 @@ var PreprocessorAdapter = {
           this.emit('error', withErrorDetails(err, file));
         }
         next();
-      });
-    };
-
-    // browserify - plugin (on wrap)
-    // https://github.com/substack/node-browserify#bpluginplugin-opts
-    custom.plugin = function plugin(b, options) {
-      b.pipeline.get('wrap').push(concat(function(src, next) {
-        try {
-          this.push(wrap(src));
-        } catch(err) {
-          this.emit('error', withErrorDetails(err));
-        }
-        next();
-      }));
-      b.once('reset', function() {
-        plugin(b, options);
       });
     };
 
